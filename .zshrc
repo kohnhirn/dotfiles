@@ -80,9 +80,55 @@ export HISTSIZE=1000
 export SAVEHIST=100000
 setopt EXTENDED_HISTORY
 
-export PATH=${PATH}:$HOME/.poetry/bin:$HOME/.local/bin
+export GOPATH=$HOME/go
+export PATH=${PATH}:$HOME/.poetry/bin:$HOME/.local/bin:$GOPATH/bin
 
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# cdr
+if [[ -n $(echo ${^fpath}/chpwd_recent_dirs(N)) && -n $(echo ${^fpath}/cdr(N)) ]]; then
+    autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
+    add-zsh-hook chpwd chpwd_recent_dirs
+    zstyle ':completion:*' recent-dirs-insert both
+    zstyle ':chpwd:*' recent-dirs-default true
+    zstyle ':chpwd:*' recent-dirs-max 1000
+    zstyle ':chpwd:*' recent-dirs-file "$HOME/.cache/chpwd-recent-dirs"
+fi
+
+# peco
+# search a destination from cdr list
+function peco-get-destination-from-cdr() {
+  cdr -l | \
+  sed -e 's/^[[:digit:]]*[[:blank:]]*//' | \
+  peco --query "$LBUFFER"
+}
+
+# search a destination from cdr list and cd the destination
+function peco-cdr() {
+  local destination="$(peco-get-destination-from-cdr)"
+  if [ -n "$destination" ]; then
+    BUFFER="cd $destination"
+    zle accept-line
+  else
+    zle reset-prompt
+  fi
+}
+zle -N peco-cdr
+bindkey '^x' peco-cdr
+
+# cd
+function pcd() {
+	local dir="$( ls -1d */ | peco)"
+	if [ ! -z "$dir" ] ; then
+		cd "$dir"
+	fi
+}
+
+# compinit
+autoload -U compinit
+export FPATH="${FPATH}:~/.zfunc"
+compinit
+
