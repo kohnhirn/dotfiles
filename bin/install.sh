@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# package
+[[ $( type yum | $? ) -eq 1 ]] && INSTALL="sudo yum -y install"
+[[ $( type apt | $? ) -eq 1 ]] && INSTALL="sudo apt -y install"
+
+PACKAGES="zsh tmux git golang peco ghq"
+
+$INSTALL $PACKAGES
+
+# dotfiles
 DOT_DIR=$HOME/dotfiles
 mkdir -p $DOT_DIR
 
