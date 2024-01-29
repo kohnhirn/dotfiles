@@ -1,0 +1,7 @@
+name: test install.sh
+on: [push, pull_request]
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - run: sh ./.bin/install.sh 
