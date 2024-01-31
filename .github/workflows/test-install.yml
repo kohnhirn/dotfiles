@@ -4,4 +4,4 @@ jobs:
   install:
     runs-on: ubuntu-latest
     steps:
-      - run: sh "${GITHUB_WORKSPACE}"/.bin/install.sh 
+      - run: sh "${GITHUB_WORKSPACE}"/../.bin/install.sh 
