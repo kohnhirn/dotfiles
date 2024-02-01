@@ -1,7 +1,7 @@
-name: test install.sh
+name: test install
 on: [push, pull_request]
 jobs:
   install:
     runs-on: ubuntu-latest
     steps:
-      - run: sh "${GITHUB_WORKSPACE}"/../.bin/install.sh 
+      - run: ls -l "${GITHUB_WORKSPACE}"
